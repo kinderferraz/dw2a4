@@ -13,12 +13,23 @@ const Utils = {
     },
 
     formatAmount(value) {
-        return Number(value) * 100
+        return Math.round(value * 100)
     },
 
     formatDate(date) {
         const splitedDate = date.split("-")
         return splitedDate.reverse().join("/")
+    }
+}
+
+const Storage = {
+    get() {
+        return JSON.parse(localStorage.getItem("kinder.finances:transactions")) || []
+    },
+
+    set() {
+        localStorage.setItem('kinder.finances:transactions',
+            JSON.stringify(Transaction.all))
     }
 }
 
@@ -46,9 +57,10 @@ const transactions = [{
 }]
 
 const Transaction = {
-    all: transactions,
+    all: Storage.get(),
     add(newTransaction) {
         this.all.push(newTransaction)
+        Storage.set()
         App.reload()
     },
 
@@ -81,11 +93,12 @@ const DOM = {
 
     addTransaction(transaction, index) {
         const tr = document.createElement('tr')
-        tr.innerHTML = this.innerHTMLTransaction(transaction)
-        this.transactionContainer.appendChild(tr)
+        tr.dataset.index = index
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction, index)
+        DOM.transactionContainer.appendChild(tr)
     },
 
-    innerHTMLTransaction(transaction) {
+    innerHTMLTransaction(transaction, idx) {
         const CSSclass = transaction.amount > 0 ?
             "income" :
             "expense"
@@ -94,7 +107,11 @@ const DOM = {
             <td class="description">${transaction.description}</td>
             <td class="${CSSclass}">${amount}</td>
             <td class="date">${transaction.date}</td>
-            <td><img src="./assets/minus.svg" alt="Remover transação"></td>
+            <td>
+                <img src="./assets/minus.svg"
+                    alt="Remover transação"
+                    onclick="Transaction.remove(${idx})">
+                </td>
         `
         return html
     },
@@ -121,9 +138,11 @@ const DOM = {
 
 const App = {
     init() {
-        Transaction.all.forEach(t => DOM.addTransaction(t))
+        Transaction.all.forEach(DOM.addTransaction)
         DOM.updateBalance()
+        Storage.set()
     },
+
     reload() {
         DOM.clearTable()
         this.init()
