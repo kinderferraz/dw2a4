@@ -10,6 +10,15 @@ const Utils = {
             currency: "BRL"
         })
         return signal + value
+    },
+
+    formatAmount(value) {
+        return Number(value) * 100
+    },
+
+    formatDate(date) {
+        const splitedDate = date.split("-")
+        return splitedDate.reverse().join("/")
     }
 }
 
@@ -23,17 +32,14 @@ const Modal = {
 }
 
 const transactions = [{
-    id: 0,
     description: "Luz",
     amount: -50000,
     date: "23/01/2021",
 }, {
-    id: 1,
     description: "Criação website",
     amount: 500000,
     date: "23/01/2021",
 }, {
-    id: 2,
     description: "Internet",
     amount: -20000,
     date: "23/01/2021",
@@ -41,12 +47,10 @@ const transactions = [{
 
 const Transaction = {
     all: transactions,
-    //add
     add(newTransaction) {
         this.all.push(newTransaction)
         App.reload()
     },
-    //remove
 
     remove(idx) {
         this.all.splice(idx, 1)
@@ -127,3 +131,56 @@ const App = {
 }
 
 App.init()
+
+
+/* Captura de dados */
+const Form = {
+    description: document.querySelector('input#description'),
+    amount: document.querySelector('input#amount'),
+    date: document.querySelector('input#date'),
+
+    getValues() {
+        return {
+            description: Form.description.value,
+            amount: Form.amount.value,
+            date: Form.date.value
+        }
+    },
+
+    submit(e) {
+        e.preventDefault()
+        let values = this.getValues()
+        try {
+            this.validateFields(values)
+            values = this.formatValues(values)
+            this.saveTransaction(values)
+            Form.clearFields()
+            Modal.toggle()
+        } catch (e) {
+            alert(e.message)
+        }
+    },
+
+    validateFields(newTransaction) {
+        const { description, amount, date } = newTransaction
+        if (description.trim() === "" || amount.trim() === "" || date.trim() === "")
+            throw new Error("Formulário incompleto. Por favor, preencha todos os campos ")
+    },
+
+    formatValues(values) {
+        let { description, amount, date } = values
+        amount = Utils.formatAmount(amount)
+        date = Utils.formatDate(date)
+        return { description, amount, date }
+    },
+
+    saveTransaction(transaction) {
+        Transaction.add(transaction)
+    },
+
+    clearFields() {
+        this.description.value = ""
+        this.amount.value = ""
+        this.date.value = ""
+    }
+}
