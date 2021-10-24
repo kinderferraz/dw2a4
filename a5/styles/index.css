@@ -1,0 +1,108 @@
+/* Geral */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,700;1,400&display=swap');
+* {
+    box-sizing: border-box;
+}
+
+ :root {
+    --green: #4E9F3D;
+    --lightgreen: #D8E9A8;
+    --darkgreen: #191A19;
+    --moss: #1E5128;
+    --red: #BB0000;
+}
+
+html {
+    width: 100vw;
+    height: 100vh;
+    padding: 3em 2em;
+    background: linear-gradient(var(--green), var(--lightgreen), white);
+    background-attachment: fixed;
+    color: white;
+    font-family: 'Rubik', sans-serif;
+}
+
+body {
+    width: min(90vw, 700px);
+    margin: auto;
+}
+
+
+/* Titles */
+
+#title {
+    margin-top: 0.5em;
+    height: 2em;
+    text-align: center;
+    font-size: 6em;
+    font-weight: bold;
+}
+
+
+/* CEP */
+
+#cep-input {
+    height: 2em;
+    margin: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#cep-input form input {
+    width: min(500px, 30em);
+    height: 2em;
+    border: 0px;
+    border-bottom: 1px solid var(--darkgreen);
+    background-color: transparent;
+    text-align: center;
+    font-size: 1.5em;
+    color: white;
+}
+
+#cep-input form input:focus {
+    outline: none;
+}
+
+#cep-input form .error {
+    border-bottom: 1px solid var(--red);
+    color: var(--red);
+}
+
+
+/* Data */
+
+#results {
+    padding: 1.5em;
+    margin: 4em 0em 0em 0em;
+    background-color: var(--green);
+    border-radius: 15px;
+}
+
+#results-title {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+
+#data-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.card {
+    background-color: var(--lightgreen);
+    min-height: 5em;
+    text-align: center;
+    flex-grow: 1;
+    border-radius: 15px;
+    color: var(--darkgreen);
+    font-size: 1.4;
+}
+
+.card h3 {
+    font-size: 1.4em;
+    padding: 0.6em 0em;
+}
