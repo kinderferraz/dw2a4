@@ -11,5 +11,3 @@ components.cepContainer.addEventListener("submit", e => {
     e.preventDefault()
     processSubmit(e.target)
 }, false)
-
-console.log(components.cepInput);

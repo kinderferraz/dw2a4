@@ -4,7 +4,6 @@ const api = {
         cep = cep.replace("-", "")
         const data = await fetch(`https://viacep.com.br/ws/${cep}/json`)
             .then(data => data.json())
-        console.log(data);
         if (data.erro) {
             components.cepInput.classList.add("error")
             throw new Error("O cep é invalido")
