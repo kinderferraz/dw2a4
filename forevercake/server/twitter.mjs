@@ -37,10 +37,12 @@ const deleteTweets = async(tweet) => {
 }
 
 const retrieveLikes = async(maxId) => {
+    let count = 0
     let tweets = []
     const user_id = await getUserId()
 
     async function next(maxId) {
+        console.log("retrieving for the", ++count, "time")
         try {
             const response = await twitter.get('favorites/list', {
                 max_id: maxId,
@@ -48,15 +50,22 @@ const retrieveLikes = async(maxId) => {
                 count: 75,
                 include_entities: false
             })
-            console.log(response);
-            if (response.data.lenght <= 1) { return tweets }
+
+            // console.log(response);
+
+            if (response.data.lenght <= 1) return tweets
             tweets = [...tweets, ...response.data]
-            await iteration.forEach(tweets, tweet => console.log({
+
+            /*await iteration.forEach(tweets, tweet => console.log({
                 id: tweet.id,
                 text: tweet.text,
                 user: tweet.user.name
-            }))
+            }))*/
+
             return await next(tweets[tweets.length - 1].id_str)
+
+            //return tweets
+
         } catch (err) {
             return tweets
         }
@@ -71,14 +80,44 @@ const main = async() => {
 
     const tweets = await retrieveLikes().catch(err => console.log(err.message))
         // todo: update filter later
-        // let tweetsToDelete = tweets.filter(tweet =>
-        // new Date(tweet.created_at) < until)
+    let tweetsToDelete = tweets.filter(tweet => new Date(tweet.created_at) < until)
 
-    await iteration.forEach(tweets, deleteTweets)
+    console.log(`tweets to delete: ${tweetsToDelete.length}`);
+    // await iteration.forEach(tweets, deleteTweets)
 
-    console.log("deleted: ", deleted)
-    console.log("not deleted", notDeleted);
+    //console.log("deleted: ", deleted)
+    //console.log("not deleted", notDeleted);
+}
+
+const post = async tweetText => {
+    console.log("tweeting : ", tweetText);
+    const result = await twitter.post("statuses/update", {
+            status: tweetText
+        }).then(res => res.data)
+        .catch(err => console.log(err))
+
+    return {
+        id: result.id_str,
+        text: result.text,
+        user: result.user.name,
+        arroba: result.user.screen_name
+    }
+}
+
+const post = async tweetText => {
+    console.log("tweeting : ", tweetText);
+    const result = await twitter.post("statuses/update", {
+            status: tweetText
+        }).then(res => res.data)
+        .catch(err => console.log(err))
+
+    return {
+        id: result.id_str,
+        text: result.text,
+        user: result.user.name,
+        arroba: result.user.screen_name
+    }
 }
 
 export default getUserId
-export { retrieveLikes, main }
+export { retrieveLikes, main, post }
