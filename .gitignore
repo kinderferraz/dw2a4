@@ -1,1 +1,4 @@
 aulas/
+node_modules/
+node_*
+.env
