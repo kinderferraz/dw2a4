@@ -3,3 +3,5 @@ node_modules/
 node_*
 .env
 tecnologia-javascript/export
+dist/
+package-lock.json
